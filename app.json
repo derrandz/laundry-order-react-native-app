@@ -1,0 +1,12 @@
+{
+  "name": "laundryhouse",
+  "displayName": "laundryhouse",
+  "expo": {
+    "name": "laundryhouse",
+    "slug": "laundryhouse",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
