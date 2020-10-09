@@ -1,12 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View} from 'react-native';
+import { shouldShowTutorial, Tutorial, LoadingLogo, SelectServices } from "./components";
 
 export default function App() {
+  const [ seenTutorial, setTutorialStatus ] = useState(0)
+
+  shouldShowTutorial().then((stuto) => setTutorialStatus(stuto))
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <LoadingLogo>
+        {
+          seenTutorial
+            ? <SelectServices />
+            : <Tutorial>
+              <SelectServices />
+            </Tutorial>
+        }
+      </LoadingLogo>
     </View>
   );
 }
