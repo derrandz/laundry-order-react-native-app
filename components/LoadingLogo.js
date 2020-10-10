@@ -1,28 +1,21 @@
-import { Icon } from 'react-native-elements';
-import React, { useState } from 'react';
-import { View } from 'react-native';
-import { NoInternet } from "./NoInternet"
-import { SomethingWrong } from "./SomethingWrong"
-import axios from "axios"
+import React, { useState, useEffect } from 'react';
+import NetInfo from '@react-native-community/netinfo'
 
-async function checkInternet () {
-  return axios.get('https://www.google.com')
-}
+import { ActivityIndicator, View } from 'react-native';
+import { retryIn } from "./utils"
+import { Center } from "./Center"
 
 async function checkBackend () {
-  return Promise.resolve({
-    message: "Firebase not implemented yet"
-  })
+  return retryIn(10)(
+    () => {
+      return Promise.resolve({
+        message: "Firebase not implemented yet"
+      })
+    }
+  )
 }
 
 async function runHealthChecks () {
-  try {
-    await checkInternet()
-  } catch (err) {
-    throw {
-      code: 'no-internet'
-    }
-  }
 
   try {
     await checkBackend()
@@ -33,12 +26,11 @@ async function runHealthChecks () {
   }
 }
 
-export function LoadingLogo(props) {
+export function LoadingLogo({ navigation }) {
   /**
    * 0: initial
    * 1: healthy
-   * 2: internet failure
-   * 3: backend failure
+   * 2: backend failure
    */
   const [ health, setHealth] = useState(0);
   const [ loading, setLoading ] = useState(1);
@@ -53,30 +45,27 @@ export function LoadingLogo(props) {
     .catch(
       (error) => {
         setLoading(0)
-        setHealth(
-          error.code === 'no-internet' ? 2 : 3
-        )
+        setHealth(2)
       }
     )
-  
-  const renderFailureComponent = (successComponent) => {
-    if (health === 2) return (<NoInternet />)
-    else if (health === 3) return (<SomethingWrong />)
-    else return (<View>{successComponent}</View>)
-  }
+
+  useEffect(
+    () => {
+      if (!loading) {
+        if (health === 2) {
+          navigation.navigate('SomethingWrong')
+        } else {
+          navigation.navigate('SelectServices')
+        }
+      }
+    }
+  )
 
   return (
-    <View>
-    {
-      loading
-        ? <Icon
-            name='dryer|washer'
-            type="font-awesome-5"
-            size={70}
-            color='black'
-          />
-        : {...renderFailureComponent(props.children)}
-    }
-    </View>
+    <Center>
+      <View>
+        <ActivityIndicator size="large"/>
+      </View>
+    </Center>
   );
 }

@@ -1,32 +1,56 @@
-import React, { useState } from 'react';
-import { StyleSheet, View} from 'react-native';
-import { shouldShowTutorial, Tutorial, LoadingLogo, SelectServices } from "./components";
+
+import 'react-native-gesture-handler';
+
+import React, { useEffect } from 'react';
+import NetInfo from "@react-native-community/netinfo"
+
+import { Tutorial, NoInternet, SomethingWrong, LoadingLogo, SelectServices } from "./components";
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { navigate, goBack, navigationRef, isReadyRef } from "./components/RootNavigation";
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  const [ seenTutorial, setTutorialStatus ] = useState(0)
+  // useEffect(
+  //   () => {
+  //     const unsubscribe = NetInfo.addEventListener(state => {
+  //       console.log('added event listener from netinfo')
 
-  shouldShowTutorial().then((stuto) => setTutorialStatus(stuto))
+  //       if ( !state.isConnected) {
+  //         console.log('went offline')
+  //         navigate('NoInternet')
+  //       } else if (state.isConnected) {
+  //         console.log('back online')
+  //         const currentRoute = navigationRef.current?.getCurrentRoute()
+  //         if (currentRoute.name === "NoInternet") {
+  //           console.log('going back')
+  //           goBack()
+  //         }
+  //       }
+  //     })
+      
+  //     return function cleanup ()  {
+  //       unsubscribe()
+  //     }
+  //   }
+  // )
 
   return (
-    <View style={styles.container}>
-      <LoadingLogo>
-        {
-          seenTutorial
-            ? <SelectServices />
-            : <Tutorial>
-              <SelectServices />
-            </Tutorial>
-        }
-      </LoadingLogo>
-    </View>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={() => {
+        isReadyRef.current = true;
+      }}
+    >
+      <Stack.Navigator initialRouteName="LoadingLogo">
+        <Stack.Screen name="LoadingLogo" component={LoadingLogo} />
+        <Stack.Screen name="Tutorial" component={Tutorial} />
+        <Stack.Screen name="SelectServices" component={SelectServices} />
+        <Stack.Screen name="NoInternet" component={NoInternet} />
+        <Stack.Screen name="SomethingWrong" component={SomethingWrong} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
