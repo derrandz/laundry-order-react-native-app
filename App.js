@@ -13,24 +13,25 @@ import { navigate, goBack, navigationRef, isReadyRef } from "./components/RootNa
 const Stack = createStackNavigator();
 
 export default function App() {
+
+  // const unsubscribe = NetInfo.addEventListener(state => {
+  //   console.log('added event listener from netinfo')
+
+  //   if ( !state.isConnected) {
+  //     console.log('went offline')
+  //     navigate('NoInternet')
+  //   } else if (state.isConnected) {
+  //     console.log('back online')
+  //     const currentRoute = navigationRef.current?.getCurrentRoute()
+  //     if (currentRoute.name === "NoInternet") {
+  //       console.log('going back')
+  //       goBack()
+  //     }
+  //   }
+  // })
+
   // useEffect(
   //   () => {
-  //     const unsubscribe = NetInfo.addEventListener(state => {
-  //       console.log('added event listener from netinfo')
-
-  //       if ( !state.isConnected) {
-  //         console.log('went offline')
-  //         navigate('NoInternet')
-  //       } else if (state.isConnected) {
-  //         console.log('back online')
-  //         const currentRoute = navigationRef.current?.getCurrentRoute()
-  //         if (currentRoute.name === "NoInternet") {
-  //           console.log('going back')
-  //           goBack()
-  //         }
-  //       }
-  //     })
-      
   //     return function cleanup ()  {
   //       unsubscribe()
   //     }
