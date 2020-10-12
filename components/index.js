@@ -1,6 +1,6 @@
 export { NoInternet } from "./NoInternet";
 export { SomethingWrong } from "./SomethingWrong";
-export { SelectServices } from "./SelectServices";
+export { MakeOrder } from "./MakeOrder";
 export { LoadingLogo } from "./LoadingLogo";
 export { shouldShowTutorial, enableTutorial, disableTutorial, Tutorial } from "./Tutorial"
 export { Center } from './Center'

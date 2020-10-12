@@ -1,0 +1,7 @@
+@today 
+  - [ ] implement global app state
+  - [ ] implement stepper for order creation steps
+  - [ ] add datetime picker component for datetime values
+  - [ ] add map and geolocation functionalities for location values
+  - [ ] implement sign-in/up with google and facebook
+  - [ ] remove navigation bar

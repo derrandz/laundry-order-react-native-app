@@ -1,57 +1,33 @@
 
 import 'react-native-gesture-handler';
 
-import React, { useEffect } from 'react';
-import NetInfo from "@react-native-community/netinfo"
+import React from 'react';
 
-import { Tutorial, NoInternet, SomethingWrong, LoadingLogo, SelectServices } from "./components";
+import { Tutorial, NoInternet, SomethingWrong, LoadingLogo, MakeOrder } from "./components";
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { navigate, goBack, navigationRef, isReadyRef } from "./components/RootNavigation";
+
+import { Provider } from "react-redux";
+import { createStore} from "redux";
+import { globalReducer } from "./state/global-reducer";
 
 const Stack = createStackNavigator();
+const store = createStore(globalReducer)
 
 export default function App() {
 
-  // const unsubscribe = NetInfo.addEventListener(state => {
-  //   console.log('added event listener from netinfo')
-
-  //   if ( !state.isConnected) {
-  //     console.log('went offline')
-  //     navigate('NoInternet')
-  //   } else if (state.isConnected) {
-  //     console.log('back online')
-  //     const currentRoute = navigationRef.current?.getCurrentRoute()
-  //     if (currentRoute.name === "NoInternet") {
-  //       console.log('going back')
-  //       goBack()
-  //     }
-  //   }
-  // })
-
-  // useEffect(
-  //   () => {
-  //     return function cleanup ()  {
-  //       unsubscribe()
-  //     }
-  //   }
-  // )
-
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      onReady={() => {
-        isReadyRef.current = true;
-      }}
-    >
-      <Stack.Navigator initialRouteName="LoadingLogo">
-        <Stack.Screen name="LoadingLogo" component={LoadingLogo} />
-        <Stack.Screen name="Tutorial" component={Tutorial} />
-        <Stack.Screen name="SelectServices" component={SelectServices} />
-        <Stack.Screen name="NoInternet" component={NoInternet} />
-        <Stack.Screen name="SomethingWrong" component={SomethingWrong} />
-      </Stack.Navigator>
-    </NavigationContainer>
+		<Provider store={store}>
+			<NavigationContainer>
+				<Stack.Navigator initialRouteName="LoadingLogo">
+					<Stack.Screen name="LoadingLogo" component={LoadingLogo} />
+					<Stack.Screen name="Tutorial" component={Tutorial} />
+					<Stack.Screen name="MakeOrder" component={MakeOrder} />
+					<Stack.Screen name="NoInternet" component={NoInternet} />
+					<Stack.Screen name="SomethingWrong" component={SomethingWrong} />
+				</Stack.Navigator>
+			</NavigationContainer>
+		</Provider>
   );
 }
