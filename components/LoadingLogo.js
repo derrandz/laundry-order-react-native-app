@@ -55,7 +55,7 @@ export function LoadingLogo({ navigation }) {
         if (health === 2) {
           navigation.navigate('SomethingWrong')
         } else {
-          navigation.navigate('SelectServices')
+          navigation.navigate('MakeOrder')
         }
       }
     }
