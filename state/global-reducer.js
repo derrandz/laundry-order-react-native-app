@@ -5,7 +5,8 @@ const INITIAL_STATE = {
 	newOrder: {
     type: "",
     details: {
-      pickup_datetime: "",
+      pickup_date: new Date(),
+      pickup_time: (new Date()).getTime(),
       pickup_address: "",
       pickup_geolocation: "",
       delivery_datetime: "",
@@ -72,11 +73,15 @@ const globalStateReducer = (state = INITIAL_STATE, action) => {
       }
       break;
 
-    case "CHOOSE_PICKUP_DATETIME":
-      return { ...state, newOrder: { ...state.newOrder, pickup_datetime: action.payload }}
+    case "CHOOSE_PICKUP_DATE":
+      return { ...state, newOrder: { ...state.newOrder, pickup_date: action.payload }}
       break;
-
-    case "ENTER_PICKUP_ADDRESS":
+    
+    case "CHOOSE_PICKUP_TIME":
+      return { ...state, newOrder: { ...state.newOrder, pickup_time: action.payload }}
+      break;
+    
+      case "ENTER_PICKUP_ADDRESS":
       return { ...state, newOrder: { ...state.newOrder, pickup_address: action.payload }}
       break;
 
