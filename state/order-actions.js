@@ -3,9 +3,19 @@ export const chooseType = (type) => ({
 	payload: type,
 });
 
-export const chooseOrderItem = (item) => ({
-  type: "CHOOSE_ORDER_ITEM",
-  payload: item
+export const chooseWashWeight = (weight) => ({
+  type: "CHOOSE_WASH_WEIGHT",
+  payload: weight,
+})
+
+export const chooseCleanCount = (count) => ({
+  type: "CHOOSE_CLEAN_COUNT",
+  payload: count,
+})
+
+export const pickIronItem = (item) => ({
+  type: "PICK_IRON_ITEM",
+  payload: item,
 })
 
 export const choosePickupDateTime = (datetime) => ({

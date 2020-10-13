@@ -1,7 +1,8 @@
 @today 
-  - [ ] implement global app state
-  - [ ] implement stepper for order creation steps
-  - [ ] add datetime picker component for datetime values
-  - [ ] add map and geolocation functionalities for location values
-  - [ ] implement sign-in/up with google and facebook
-  - [ ] remove navigation bar
+  ✔ implement global app state @done (10/13/2020, 12:48:15 AM)
+  ✔ implement stepper for order creation steps @done (10/13/2020, 12:48:18 AM)
+  ☐ make fake items logic and display
+  ☐ add datetime picker component for datetime values
+  ☐ add map and geolocation functionalities for location values
+  ☐ implement sign-in/up with google and facebook
+  ☐ remove navigation bar

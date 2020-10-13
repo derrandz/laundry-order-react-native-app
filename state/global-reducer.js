@@ -4,13 +4,25 @@ import { combineReducers } from "redux";
 const INITIAL_STATE = {
 	newOrder: {
     type: "",
-    pickup_datetime: "",
-    pickup_address: "",
-    pickup_geolocation: "",
-    delivery_datetime: "",
-    additional_notes: ""
+    details: {
+      pickup_datetime: "",
+      pickup_address: "",
+      pickup_geolocation: "",
+      delivery_datetime: "",
+      additional_notes: ""
+    },
+    wash: {
+      weight: "",
+    },
+    clean: {
+      count: 1,
+    },
+    iron: {
+      items: [],
+    }
   },
-	orders: [],
+  orders: [],
+  items: ['shirt', 'jacket', 'trousers'],
 	currentUser: {
     firstName: "",
     lastName: "",
@@ -25,8 +37,39 @@ const globalStateReducer = (state = INITIAL_STATE, action) => {
       return { ...state, newOrder: { ...state.newOrder, type: action.payload }}
       break;
 
-    case "CHOOSE_ORDER_ITEM":
-      return { ...state, newOrder: { ...state.newOrder, items: [...state.newOrder.items, action.payload] }}
+    case "CHOOSE_WASH_WEIGHT":
+      return { ...state, newOrder: { ...state.newOrder, wash: { weight: action.payload } } }
+      break;
+
+    case "CHOOSE_CLEAN_COUNT":
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          clean: { count: action.payload }
+        }
+      }
+      break;
+
+    case "PICK_IRON_ITEM":
+      const item = action.payload;
+
+      let newItems = [...state.newOrder.iron.items]
+
+      if (newItems.includes(item)) {
+        newItems = [ ...newItems.filter((i) => item !== i) ]
+      } else {
+        newItems = [ ...newItems, item ]
+      }
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          iron: {
+            items: newItems,
+          }
+        }
+      }
       break;
 
     case "CHOOSE_PICKUP_DATETIME":
