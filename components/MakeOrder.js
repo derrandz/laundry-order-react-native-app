@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Slider from '@react-native-community/slider';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
 import { CheckBox } from "react-native-elements";
 import { connect } from "react-redux";
@@ -9,7 +10,8 @@ import { bindActionCreators } from "redux";
 
 import {
   chooseType,
-  choosePickupDateTime,
+  choosePickupDate,
+  choosePickupTime,
   enterPickupAddress,
   choosePickupLocation,
   chooseWashWeight,
@@ -18,6 +20,9 @@ import {
 } from "../state/order-actions";
 
 const MakeOrderComponent = function (props) {
+
+  const [ displayDatePicker, setDisplayDatePicker ] = useState(true);
+  const [ displayTimePicker, setDisplayTimePicker ] = useState(true);
 
   const getProperTerm = (type) => {
     switch (type) {
@@ -36,6 +41,9 @@ const MakeOrderComponent = function (props) {
         break;
     }
   }
+
+  const formatDate = (date) => date.toString()
+  const formatTime = (time) => time
 
   return (
     <View style={{ flex: 1 }}>
@@ -145,13 +153,58 @@ const MakeOrderComponent = function (props) {
           }
         </ProgressStep>
       
-        <ProgressStep label="Third Step">
+        <ProgressStep label="Choose Pickup Date">
           <View style={{ alignItems: 'center' }}>
-            <Text>This is the content within step 3!</Text>
-            <Text>We will select pickup datetime</Text>
+            {
+              displayDatePicker
+              && <DateTimePicker
+                value={props.order.details.pickup_date}
+                mode={'date'}
+                is24Hour={true}
+                display="default"
+                onChange={
+                  (value) => {
+                    props.choosePickupDate(value)
+                    setDisplayDatePicker(false)
+                  } 
+                }
+              />
+            }
+          </View>
+          <View>
+            <Button onPress={() => setDisplayDatePicker(true)} title="Choose date" />
+            <Text>
+              {formatDate(props.order.details.pickup_date)}
+            </Text>
           </View>
         </ProgressStep>
       
+        <ProgressStep label="Choose Pickup Time">
+          <View style={{ alignItems: 'center' }}>
+            {
+              displayTimePicker
+              && <DateTimePicker
+                value={props.order.details.pickup_time}
+                mode={'time'}
+                is24Hour={true}
+                display="default"
+                onChange={
+                  (value) => {
+                    props.choosePickupTime(value)
+                    setDisplayTimePicker(false)
+                  }
+                }
+              />
+            }
+          </View>
+          <View>
+            <Button onPress={() => setDisplayTimePicker(true)} title="Choose time" />
+            <Text>
+              {formatTime(props.order.details.pickup_time)}
+            </Text>
+          </View>
+        </ProgressStep>
+
         <ProgressStep label="Third Step">
           <View style={{ alignItems: 'center' }}>
             <Text>This is the content within step 4!</Text>
@@ -178,7 +231,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 	return bindActionCreators({
 		chooseType,
-    choosePickupDateTime,
+    choosePickupDate,
+    choosePickupTime,
     enterPickupAddress,
     choosePickupLocation,
     chooseWashWeight,
