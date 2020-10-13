@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Slider from '@react-native-community/slider';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import MapView from 'react-native-maps';
 
 import { View, Text, Button } from 'react-native';
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
@@ -13,7 +14,7 @@ import {
   choosePickupDate,
   choosePickupTime,
   enterPickupAddress,
-  choosePickupLocation,
+  choosePickupGeolocation,
   chooseWashWeight,
   chooseCleanCount,
   pickIronItem,
@@ -205,10 +206,13 @@ const MakeOrderComponent = function (props) {
           </View>
         </ProgressStep>
 
-        <ProgressStep label="Third Step">
+        <ProgressStep label="Choose pickup location">
           <View style={{ alignItems: 'center' }}>
-            <Text>This is the content within step 4!</Text>
-            <Text>We will select pickup location</Text>
+          {/* <MapView
+            style={{ flex: 1 }}
+            region={props.order.details.pickup_geolocation}
+            onRegionChange={(value) => props.choosePickupGeolocation(value)}
+          /> */}
           </View>
         </ProgressStep>
       
@@ -234,7 +238,7 @@ const mapDispatchToProps = (dispatch) => {
     choosePickupDate,
     choosePickupTime,
     enterPickupAddress,
-    choosePickupLocation,
+    choosePickupGeolocation,
     chooseWashWeight,
     chooseCleanCount,
     pickIronItem,

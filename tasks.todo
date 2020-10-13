@@ -1,8 +1,13 @@
 @today 
   ✔ implement global app state @done (10/13/2020, 12:48:15 AM)
   ✔ implement stepper for order creation steps @done (10/13/2020, 12:48:18 AM)
-  ☐ make fake items logic and display
-  ☐ add datetime picker component for datetime values
+  ✔ make fake items logic and display @done (10/13/2020, 2:09:35 AM)
+  ✔ add datetime picker component for datetime values @done (10/13/2020, 2:09:38 AM)
   ☐ add map and geolocation functionalities for location values
+    ✔ added module @done (10/13/2020, 2:41:36 AM)
+    ✔ added markup @done (10/13/2020, 2:41:37 AM)
+    ✔ added actions @done (10/13/2020, 2:41:37 AM)
+    ☐ iterate over mobile to make sure it's functional
+  ☐ refactor loading logo to become outside of app routing
   ☐ implement sign-in/up with google and facebook
   ☐ remove navigation bar
