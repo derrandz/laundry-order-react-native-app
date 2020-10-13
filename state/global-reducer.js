@@ -8,7 +8,12 @@ const INITIAL_STATE = {
       pickup_date: new Date(),
       pickup_time: (new Date()).getTime(),
       pickup_address: "",
-      pickup_geolocation: "",
+      pickup_geolocation: {
+        latitude: 0,
+        longitude: 0,
+        latitudeDelta: 0,
+        longitudeDelta: 0,
+      },
       delivery_datetime: "",
       additional_notes: ""
     },

@@ -33,7 +33,7 @@ export const enterPickupAddress = (address) => ({
   payload: address,
 })
 
-export const choosePickupLocation = (location) => ({
+export const choosePickupGeolocation = (location) => ({
   type: "CHOOSE_PICKUP_GEOLOCATION",
   payload: location,
 })
