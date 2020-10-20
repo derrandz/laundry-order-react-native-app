@@ -278,8 +278,8 @@ const MakeOrderComponent = function (props) {
                     (value) => {
                       setDisplayDatePicker(false);
                       const date = new Date(value.nativeEvent.timestamp);
-                      props.choosePickupDate(date);
                       setDatetimePicked([true, false]);
+                      props.choosePickupDate(date);
                     } 
                   }
                 />
@@ -311,8 +311,8 @@ const MakeOrderComponent = function (props) {
                   (value) => {
                     setDisplayTimePicker(false);
                     const time = new Date(value.nativeEvent.timestamp)
-                    props.choosePickupTime(time);
                     setDatetimePicked([true, true]);
+                    props.choosePickupTime(time);
                   }
                 }
               />

@@ -10,16 +10,21 @@
     ✔ iterate over mobile to make sure it's functional @done (10/13/2020, 11:15:22 PM)
     ☐ Allow user to choose between entering an address or choosing a current location (or both?)
       ✔ Add current location functionality @done (10/19/2020, 6:17:43 PM)
-      ☐ Add enter address field
+      ✔ Add enter address field @done (10/20/2020, 6:37:40 PM)
     ✔ enable user to drag the position to select the place they desire @done (10/20/2020, 5:29:46 PM)
-    ☐ store the location and address on change
+    ✔ store the location and address on change @done (10/20/2020, 6:37:42 PM)
       ✔ store location @done (10/20/2020, 5:30:07 PM)
-      ☐ store address
-  
-  ☐ 
+      ✔ store address @done (10/20/2020, 6:37:41 PM)
+  ✔ disallow continuation to next step if first step not filled @done (10/20/2020, 9:43:03 PM)
+  ✔ remove navigation bar @done (10/20/2020, 9:57:01 PM)
+  ☐ add review order before submit
+  ☐ add submit logic
   ☐ refactor loading logo to become outside of app routing
   ☐ implement sign-in/up with google and facebook
-  ☐ remove navigation bar
+  ☐ add items retrieval from database
+
+@bugs
+  ☐ When you choose time, you need to choose it twice before you head towards the next step
 
 @later
   ☐ configure maps to work on iOS

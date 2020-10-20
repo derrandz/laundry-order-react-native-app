@@ -21,11 +21,11 @@ export default function App() {
 		<Provider store={store}>
 			<NavigationContainer>
 				<Stack.Navigator initialRouteName="LoadingLogo">
-					<Stack.Screen name="LoadingLogo" component={LoadingLogo} />
-					<Stack.Screen name="Tutorial" component={Tutorial} />
-					<Stack.Screen name="MakeOrder" component={MakeOrder} />
-					<Stack.Screen name="NoInternet" component={NoInternet} />
-					<Stack.Screen name="SomethingWrong" component={SomethingWrong} />
+					<Stack.Screen options={{ headerShown: false }}name="LoadingLogo" component={LoadingLogo} />
+					<Stack.Screen options={{ headerShown: false }}name="Tutorial" component={Tutorial} />
+					<Stack.Screen options={{ headerShown: false }}name="MakeOrder" component={MakeOrder} />
+					<Stack.Screen options={{ headerShown: false }}name="NoInternet" component={NoInternet} />
+					<Stack.Screen options={{ headerShown: false }}name="SomethingWrong" component={SomethingWrong} />
 				</Stack.Navigator>
 			</NavigationContainer>
 		</Provider>
