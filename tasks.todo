@@ -7,7 +7,24 @@
     ✔ added module @done (10/13/2020, 2:41:36 AM)
     ✔ added markup @done (10/13/2020, 2:41:37 AM)
     ✔ added actions @done (10/13/2020, 2:41:37 AM)
-    ☐ iterate over mobile to make sure it's functional
+    ✔ iterate over mobile to make sure it's functional @done (10/13/2020, 11:15:22 PM)
+    ☐ Allow user to choose between entering an address or choosing a current location (or both?)
+      ✔ Add current location functionality @done (10/19/2020, 6:17:43 PM)
+      ☐ Add enter address field
+    ☐ enable user to drag the position to select the place they desire
+    ☐ store the location and address on change
+    ☐ flip the stepper to become vertical and reduce steps number to:
+      ☐ choose type and details
+      ☐ pick date and time for pick up
+      ☐ choose location or enter address
+      ☐ revise
+      ☐ submitj
+  
+  ☐ 
   ☐ refactor loading logo to become outside of app routing
   ☐ implement sign-in/up with google and facebook
   ☐ remove navigation bar
+
+@later
+  ☐ configure maps to work on iOS
+  ☐ revise the datetimepicker: whether it requires configuration for iOS and Android

@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import MapView from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 
-import { View, Text, Button } from 'react-native';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
+
+import { View, Text, Button, StyleSheet, Dimensions } from 'react-native';
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
-import { CheckBox } from "react-native-elements";
+import { CheckBox, Input, Icon } from "react-native-elements";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -20,12 +23,44 @@ import {
   pickIronItem,
 } from "../state/order-actions";
 
+const styles = StyleSheet.create({
+  map: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+});
+
 const MakeOrderComponent = function (props) {
 
-  const [ displayDatePicker, setDisplayDatePicker ] = useState(true);
-  const [ displayTimePicker, setDisplayTimePicker ] = useState(true);
+  const [ displayDatePicker, setDisplayDatePicker ] = useState(false);
+  const [ displayTimePicker, setDisplayTimePicker ] = useState(false);
+  const [ currentLocation, setCurrentLocation ] = useState({ latitude: 0, longitude: 0 });
+	const [ locationPermissionStatus, setLocationPermissionStatus ] = useState({ status: 'not-set', message: '' });
+	
+	const askForLocationPermissionStatus = async () => {
+		const { status } = await Permissions.askAsync(Permissions.LOCATION);
+		
+		setLocationPermissionStatus({ status });
 
-  const getProperTerm = (type) => {
+		if (status !== 'granted') {
+      setLocationPermissionStatus({ message: `Permission to access location is ${status}` });
+      alert(locationPermissionStatus.message);
+    }
+	};
+
+	const getLocation = async () => {
+    if (locationPermissionStatus.status !== 'granted') {
+      await askForLocationPermissionStatus();
+    }
+ 
+    const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Highest,
+    });
+    setCurrentLocation({ latitude, longitude });
+    props.choosePickupGeolocation({ latitude, longitude });
+	};
+
+	const getProperTerm = (type) => {
     switch (type) {
       case 'wash':
         return 'weight';
@@ -43,8 +78,8 @@ const MakeOrderComponent = function (props) {
     }
   }
 
-  const formatDate = (date) => date.toString()
-  const formatTime = (time) => time
+  const formatDate = (date) => date.toLocaleDateString();
+  const formatTime = (time) => time.toLocaleTimeString();
 
   return (
     <View style={{ flex: 1 }}>
@@ -154,34 +189,41 @@ const MakeOrderComponent = function (props) {
           }
         </ProgressStep>
       
-        <ProgressStep label="Choose Pickup Date">
-          <View style={{ alignItems: 'center' }}>
-            {
-              displayDatePicker
-              && <DateTimePicker
-                value={props.order.details.pickup_date}
-                mode={'date'}
-                is24Hour={true}
-                display="default"
-                onChange={
-                  (value) => {
-                    props.choosePickupDate(value)
-                    setDisplayDatePicker(false)
-                  } 
-                }
-              />
-            }
-          </View>
+        <ProgressStep label="Choose Pickup Details">
           <View>
-            <Button onPress={() => setDisplayDatePicker(true)} title="Choose date" />
-            <Text>
-              {formatDate(props.order.details.pickup_date)}
-            </Text>
-          </View>
-        </ProgressStep>
-      
-        <ProgressStep label="Choose Pickup Time">
-          <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center' }}>
+              {
+                displayDatePicker
+                && <DateTimePicker
+                  value={props.order.details.pickup_date}
+                  mode={'date'}
+                  is24Hour={true}
+                  display="default"
+                  onChange={
+                    (value) => {
+                      setDisplayDatePicker(false);
+                      const date = new Date(value.nativeEvent.timestamp);
+                      props.choosePickupDate(date);
+                    } 
+                  }
+                />
+              }
+            </View>
+            <View>
+              <Input
+                placeholder='Pickup date'
+                value={formatDate(props.order.details.pickup_date)}
+                disabled
+              />
+            </View>
+            <View>
+              <Button
+                title="Choose Date"
+                onPress={() => setDisplayDatePicker(true)}
+              />
+            </View>
+
+            <View style={{ alignItems: 'center' }}>
             {
               displayTimePicker
               && <DateTimePicker
@@ -191,28 +233,70 @@ const MakeOrderComponent = function (props) {
                 display="default"
                 onChange={
                   (value) => {
-                    props.choosePickupTime(value)
-                    setDisplayTimePicker(false)
+                    setDisplayTimePicker(false);
+                    const time = new Date(value.nativeEvent.timestamp)
+                    props.choosePickupTime(time);
                   }
                 }
               />
             }
-          </View>
-          <View>
-            <Button onPress={() => setDisplayTimePicker(true)} title="Choose time" />
-            <Text>
-              {formatTime(props.order.details.pickup_time)}
-            </Text>
+            </View>
+
+            <View>
+              <Input
+                placeholder='Pickup time'
+                value={formatTime(props.order.details.pickup_time)}
+                disabled
+              />
+            </View>
+            <View>
+              <Button
+                title="Choose time"
+                onPress={() => setDisplayTimePicker(true)}
+              />
+            </View>
           </View>
         </ProgressStep>
-
+      
         <ProgressStep label="Choose pickup location">
-          <View style={{ alignItems: 'center' }}>
-          {/* <MapView
-            style={{ flex: 1 }}
-            region={props.order.details.pickup_geolocation}
-            onRegionChange={(value) => props.choosePickupGeolocation(value)}
-          /> */}
+          <View>
+            <Input
+              placeholder="Address"
+              value={props.order.details.pickup_address}
+              onChange={props.enterPickupAddress}
+            />
+          </View>
+          <View>
+            <Button onPress={() => getLocation()} title="Get Current Location" />
+            <Text>Location Permission Status({locationPermissionStatus.status}): {locationPermissionStatus.message}</Text>
+            <Text>Current Position: Latitude ({ currentLocation.latitude }), Longitude ({ currentLocation.longitude })</Text>
+            <Text>Chosen Position: Latitude ({ props.order.details.pickup_geolocation.latitude  }), Longitude ({ props.order.details.pickup_geolocation.longitude })</Text>
+          </View>
+          <View>
+            <MapView
+              style={styles.map}
+              provider={PROVIDER_GOOGLE}
+              region={{
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+                longitudeDelta: 0,
+                latitudeDelta: 0,
+              }}
+              initialRegion={{
+                latitude: 31.794525,
+                longitude: -7.0849336,
+              }}
+              showsUserLocation={true}
+            >
+							<MapView.Marker
+                coordinate={{
+                  latitude: currentLocation.latitude,
+                  longitude: currentLocation.longitude,
+                }}
+                draggable
+                onDragEnd={({ nativeEvent: { coordinate }}) => props.choosePickupGeolocation(coordinate)}
+              />
+						</MapView>
           </View>
         </ProgressStep>
       
