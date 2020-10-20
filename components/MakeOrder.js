@@ -36,7 +36,10 @@ const MakeOrderComponent = function (props) {
   const [ displayTimePicker, setDisplayTimePicker ] = useState(false);
   const [ currentLocation, setCurrentLocation ] = useState({ latitude: 0, longitude: 0 });
 	const [ locationPermissionStatus, setLocationPermissionStatus ] = useState({ status: 'not-set', message: '' });
-	
+  const [ nextStepsState, setNextStepsState ] = useState([true, true, true, true]);
+  const [ currentStep, setCurrentStep ] = useState(0);
+  const [ datetimePicked, setDatetimePicked ] = useState([false, false]);
+
 	const askForLocationPermissionStatus = async () => {
 		const { status } = await Permissions.askAsync(Permissions.LOCATION);
 		
@@ -78,13 +81,75 @@ const MakeOrderComponent = function (props) {
     }
   }
 
-  const formatDate = (date) => date.toLocaleDateString();
-  const formatTime = (time) => time.toLocaleTimeString();
+  const formatDate = (date) => date ? date.toLocaleDateString() : "Choose date";
+  const formatTime = (time) => time ? time.toLocaleTimeString() : "Choose time";
+
+  // TODO: replace the types with an imported enum or something
+  const validators = [
+    //firstStep
+    () => {
+      const isFirstStepValid = props.order.type !== ""
+      && [
+        "wash", "clean", "iron",
+      ].includes(props.order.type);
+
+      if (isFirstStepValid) {
+        setNextStepsState([false, true, true, true]);
+      }
+    },
+    //secondStep,
+    () => {
+      const isSecondStepValid = (props.order.type === "wash" && props.order.wash.weight !== "") 
+      || (props.order.type === "clean" && props.order.clean.count > 1)
+      || (props.order.type === "iron" && props.order.iron.items.length > 0);
+      
+      if (isSecondStepValid) {
+        setNextStepsState([false, false, true, true]);
+      }
+    },
+    //thirdStep,
+    () => {
+      const isThirdStepValid = props.order.details.pickup_date !== new Date()
+      && props.order.details.pickup_time !== new Date()
+      && datetimePicked[0]
+      && datetimePicked[1]
+
+      if (isThirdStepValid) {
+        setNextStepsState([false, false, false, true]);
+      }
+    },
+    //fourthStep,
+    () => {
+      const isFourthStepValid = props.order.details.pickup_address !== ""
+      || (
+        props.order.details.pickup_geolocation.latitude !== 0
+        && props.order.details.pickup_geolocation.longitude !== 0
+      )
+
+      if (isFourthStepValid) {
+        setNextStepsState([false, false, false, false]);
+      }
+    },
+  ]
+
+  const onNext = () => { setCurrentStep(currentStep + 1) }
+  const onPrevious = () => { setCurrentStep(currentStep - 1) }
+
+  useEffect(() => {
+    validators[currentStep]()
+  }, [
+    props.order
+  ]);
 
   return (
     <View style={{ flex: 1 }}>
       <ProgressSteps>
-        <ProgressStep label="Select Type">
+        <ProgressStep
+          label="Select Type"
+          nextBtnDisabled={nextStepsState[0]}
+          onNext={onNext}
+          onPrevious={onPrevious}
+        >
           <View style={{ alignItems: 'center' }}>
     
             <View>
@@ -123,7 +188,12 @@ const MakeOrderComponent = function (props) {
           </View>
         </ProgressStep>
 
-        <ProgressStep label={`Choose ${getProperTerm(props.order.type)}`}>
+        <ProgressStep
+          label={`Choose ${getProperTerm(props.order.type)}`}
+          nextBtnDisabled={nextStepsState[1]}
+          onNext={onNext}
+          onPrevious={onPrevious}
+        >
           { 
             1 && props.order.type === "wash"
               ? <View>
@@ -189,7 +259,12 @@ const MakeOrderComponent = function (props) {
           }
         </ProgressStep>
       
-        <ProgressStep label="Choose Pickup Details">
+        <ProgressStep
+          label="Choose Pickup Details"
+          nextBtnDisabled={nextStepsState[2]}
+          onNext={onNext}
+          onPrevious={onPrevious}
+        >
           <View>
             <View style={{ alignItems: 'center' }}>
               {
@@ -204,6 +279,7 @@ const MakeOrderComponent = function (props) {
                       setDisplayDatePicker(false);
                       const date = new Date(value.nativeEvent.timestamp);
                       props.choosePickupDate(date);
+                      setDatetimePicked([true, false]);
                     } 
                   }
                 />
@@ -236,6 +312,7 @@ const MakeOrderComponent = function (props) {
                     setDisplayTimePicker(false);
                     const time = new Date(value.nativeEvent.timestamp)
                     props.choosePickupTime(time);
+                    setDatetimePicked([true, true]);
                   }
                 }
               />
@@ -258,7 +335,12 @@ const MakeOrderComponent = function (props) {
           </View>
         </ProgressStep>
       
-        <ProgressStep label="Choose pickup location">
+        <ProgressStep
+          label="Choose pickup location"
+          nextBtnDisabled={nextStepsState[3]}
+          onNext={onNext}
+          onPrevious={onPrevious}
+        >
           <View>
             <Input
               placeholder="Address"
@@ -285,6 +367,8 @@ const MakeOrderComponent = function (props) {
               initialRegion={{
                 latitude: 31.794525,
                 longitude: -7.0849336,
+                longitudeDelta: 0,
+                latitudeDelta: 0,
               }}
               showsUserLocation={true}
             >
@@ -300,7 +384,9 @@ const MakeOrderComponent = function (props) {
           </View>
         </ProgressStep>
       
-        <ProgressStep label="Third Step">
+        <ProgressStep
+          label="Final Step"
+        >
           <View style={{ alignItems: 'center' }}>
             <Text>This is the content within step 5!</Text>
             <Text>We will insert additional notes</Text>

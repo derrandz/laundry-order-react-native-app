@@ -11,14 +11,10 @@
     ☐ Allow user to choose between entering an address or choosing a current location (or both?)
       ✔ Add current location functionality @done (10/19/2020, 6:17:43 PM)
       ☐ Add enter address field
-    ☐ enable user to drag the position to select the place they desire
+    ✔ enable user to drag the position to select the place they desire @done (10/20/2020, 5:29:46 PM)
     ☐ store the location and address on change
-    ☐ flip the stepper to become vertical and reduce steps number to:
-      ☐ choose type and details
-      ☐ pick date and time for pick up
-      ☐ choose location or enter address
-      ☐ revise
-      ☐ submitj
+      ✔ store location @done (10/20/2020, 5:30:07 PM)
+      ☐ store address
   
   ☐ 
   ☐ refactor loading logo to become outside of app routing
