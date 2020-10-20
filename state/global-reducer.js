@@ -1,4 +1,3 @@
-import { RecyclerViewBackedScrollView } from "react-native";
 import { combineReducers } from "redux";
 
 const INITIAL_STATE = {
@@ -6,7 +5,7 @@ const INITIAL_STATE = {
     type: "",
     details: {
       pickup_date: new Date(),
-      pickup_time: (new Date()).getTime(),
+      pickup_time: new Date(),
       pickup_address: "",
       pickup_geolocation: {
         latitude: 0,
@@ -79,19 +78,55 @@ const globalStateReducer = (state = INITIAL_STATE, action) => {
       break;
 
     case "CHOOSE_PICKUP_DATE":
-      return { ...state, newOrder: { ...state.newOrder, pickup_date: action.payload }}
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          details: {
+            ...state.newOrder.details,
+            pickup_date: action.payload,
+          }
+        },
+      }
       break;
     
     case "CHOOSE_PICKUP_TIME":
-      return { ...state, newOrder: { ...state.newOrder, pickup_time: action.payload }}
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          details: {
+            ...state.newOrder.details,
+            pickup_time: action.payload,
+          },
+        },
+      }
       break;
     
-      case "ENTER_PICKUP_ADDRESS":
-      return { ...state, newOrder: { ...state.newOrder, pickup_address: action.payload }}
+    case "ENTER_PICKUP_ADDRESS":
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          details: {
+            ...state.newOrder.details,
+            pickup_address: action.payload,
+          }
+        }
+      }
       break;
 
     case "CHOOSE_PICKUP_GEOLOCATION":
-      return { ...state, newOrder: { ...state.newOrder, pickup_geolocation: action.payload }}
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          details: {
+            ...state.newOrder.details,
+            pickup_geolocation: action.payload
+          }
+        }
+      }
       break;
 
     default:

@@ -19,13 +19,13 @@ export const pickIronItem = (item) => ({
 })
 
 export const choosePickupDate = (date) => ({
-	type: "CHOOSE_PICKUP_DATE",
-	payload: date,
+  type: "CHOOSE_PICKUP_DATE",
+  payload: date,
 });
 
 export const choosePickupTime = (time) => ({
 	type: "CHOOSE_PICKUP_TIME",
-	payload: time,
+  payload: time,
 });
 
 export const enterPickupAddress = (address) => ({
