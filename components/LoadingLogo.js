@@ -53,9 +53,10 @@ export function LoadingLogo({ navigation }) {
     () => {
       if (!loading) {
         if (health === 2) {
-          navigation.navigate('SomethingWrong')
+          navigation.navigate('SomethingWrong');
         } else {
-          navigation.navigate('MakeOrder')
+          // navigation.navigate('MakeOrder');
+          navigation.navigate('Register');
         }
       }
     }

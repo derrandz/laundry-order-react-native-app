@@ -33,6 +33,8 @@ const INITIAL_STATE = {
     lastName: "",
     authToken: "",
     email: "",
+    facebookUserId: "",
+    success: 0,
   }
 };
 
@@ -128,9 +130,41 @@ const globalStateReducer = (state = INITIAL_STATE, action) => {
         }
       }
       break;
+    
+    case "SAVE_CURRENT_USER":
+      return {
+        ...state,
+        currentUser: {
+          ...action.payload,
+          success: 1,
+        }
+      }
+      break;
+    
+    case "FETCH_CURRENT_USER_FAILED":
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          success: 2,
+        }
+      }
+      break;
+    
+    case "FLUSH_OUT_CURRENT_USER":
+      return {
+        ...state,
+        currentUser: {
+          firstName: "",
+          lastName: "",
+          email: "",
+          facebookUserId: "",
+        }
+      }
+      break;
 
     default:
-		return state
+      return state
 	}
 };
 
