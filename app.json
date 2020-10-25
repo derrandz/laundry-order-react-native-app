@@ -1,12 +1,30 @@
 {
   "name": "laundryhouse",
   "displayName": "laundryhouse",
+  "icon": "./icon/icon.png",
   "expo": {
     "name": "laundryhouse",
     "slug": "laundryhouse",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
-  }
+    ],
+    "android": {
+      "package": "com.laundyhouseeljadida.laundryhouse"
+    }
+  },
+  "version": "1.0.0",
+  "slug": "laundry-house-eljadida",
+  "ios": {
+    "bundleIdentifier": "laundryhouseeljadida",
+    "buildNumber": "1.0.0"
+  },
+  "android": {
+    "package": "laundryhouseeljadida",
+    "versionCode": 1
+  },
+  "appId": "3432796773467634",
+  "facebookScheme": "fb3432796773467634",
+  "facebookAppId": "3432796773467634",
+  "facebookDisplayName": ""
 }

@@ -5,6 +5,7 @@ import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import * as SecureStore from 'expo-secure-store';
 
 import { View, Text, Button, StyleSheet, Dimensions } from 'react-native';
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
 });
 
 const MakeOrderComponent = function (props) {
-
+  
   const [ displayDatePicker, setDisplayDatePicker ] = useState(false);
   const [ displayTimePicker, setDisplayTimePicker ] = useState(false);
   const [ currentLocation, setCurrentLocation ] = useState({ latitude: 0, longitude: 0 });

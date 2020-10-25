@@ -18,10 +18,19 @@
   ✔ disallow continuation to next step if first step not filled @done (10/20/2020, 9:43:03 PM)
   ✔ remove navigation bar @done (10/20/2020, 9:57:01 PM)
   ☐ add review order before submit
+  ☐ add orders summary
   ☐ add submit logic
-  ☐ refactor loading logo to become outside of app routing
-  ☐ implement sign-in/up with google and facebook
+  ✔ write backend sdk @done (10/24/2020, 6:57:14 PM)
+  ☐ implement sign-in/up
+    ✔ add signing with facebook @done (10/24/2020, 5:42:33 PM)
+    ☐ implement authentication scenario
+      ☐ when signin fails from backend the message and the way it is displayed needs to improved
+      ✔ if successful we store the current user @done (10/25/2020, 9:45:23 PM)
+    ✔ implement auth token persistence @done (10/25/2020, 9:44:29 PM)
+    ✔ hook to the backend @done (10/25/2020, 9:44:31 PM)
+    ✔ implement a secure httponly cookie for the authentication token @done (10/25/2020, 9:44:33 PM)
   ☐ add items retrieval from database
+  ☐ look into using deep links to allow for opening the user settings for the app's location when it's denied
 
 @bugs
   ☐ When you choose time, you need to choose it twice before you head towards the next step

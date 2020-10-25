@@ -1,3 +1,5 @@
+const apiRootUrl = 'http://b4f3613a9bcd.ngrok.io';
+
 const CommonHeaders = {
   'Content-Type': 'application/json',
 };
@@ -6,64 +8,53 @@ const Routes = {
   SignIn: {
     url: '/api/v1/users/sign-in',
     method: 'POST',
-    headers: {
-      'Authorization': 'Bearer {token}',
-    }
   },
   Authenticate: {
     url: '/api/v1/users/authenticate',
     method: 'POST',
-    headers: {
-      'Authorization': 'Bearer {token}',
-    },
   },
   CreateOrder: {
     url: '/api/v1/order',
     method: 'POST',
-    headers: {
-      'Authorization': 'Bearer {token}',
-    }
   },
   GetMyOrders: {
     url: '/api/v1/users/orders',
     method: 'GET',
-    headers: {
-      'Authorization': 'Bearer {token}',
-    },
   },
   GetAllOrders: {
     url: '/api/v1/orders',
     method: 'GET',
-    headers: {
-      'Authorization': 'Bearer {token}',
-    }
   },
   GetAllUsers: {
     url: '/api/v1/users',
     method: 'GET',
-    headers: {
-      'Authorization': 'Bearer {token}',
-    }
   },
 };
 
 const performRequest = (routeName) => (token, data) => {
-  const {
-    url, method, headers,
-  } = Routes[routeName];
+  const { url, method, headers } = Routes[routeName];
 
-  headers.Authorization.replace(/{token}/, token);
+  const finalHeaders = {
+    ...CommonHeaders,
+    ...headers,
+    ...{ 'Cookie': `token="${token}" ; HttpOnly` },
+  };
 
-  return fetch(url, {
+  return fetch(`${apiRootUrl}${url}`, {
     method,
-    headers: {
-      ...headers,
-      ...CommonHeaders
-    },
+    headers: finalHeaders,
     body: data,
   }).then(
     (response) => response.json()
-  );
+  ).then((jsonResponse) => {
+    if (jsonResponse.status === 'failure') {
+      throw jsonResponse.data;
+    } else if (jsonResponse.status === 'success') {
+      return jsonResponse.data;
+    } else {
+      return jsonResponse;
+    }
+  });
 }
 
 const SignIn = performRequest('SignIn');
