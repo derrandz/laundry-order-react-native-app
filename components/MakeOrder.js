@@ -5,13 +5,13 @@ import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import * as SecureStore from 'expo-secure-store';
 
-import { View, Text, Button, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Button, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
-import { CheckBox, Input, Icon } from "react-native-elements";
+import { CheckBox, Input, Card, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { Center } from "./Center"
 
 import {
   chooseType,
@@ -22,12 +22,16 @@ import {
   chooseWashWeight,
   chooseCleanCount,
   pickIronItem,
+  enterPhoneNumber,
+  enterAdditionalNotes,
+  submitNewOrder,
 } from "../state/order-actions";
+import { ScrollView } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   map: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    height: Dimensions.get('window').height * 1/2,
   },
 });
 
@@ -40,7 +44,29 @@ const MakeOrderComponent = function (props) {
   const [ nextStepsState, setNextStepsState ] = useState([true, true, true, true]);
   const [ currentStep, setCurrentStep ] = useState(0);
   const [ datetimePicked, setDatetimePicked ] = useState([false, false]);
-
+  const [ orderAsList, updateOrderAsList ] = useState({
+    0: {
+      title: "Type & Details",
+      value: "",
+    },
+    1: {
+      title: "Pickup Time & Date",
+      value: "",
+    },
+    2: {
+      title: "Pickup Address & Geolocation",
+      value: "",
+    },
+    3: {
+      title: "Phone Number",
+      value: "",
+    },
+    4: {
+      title: "Additional notes",
+      value: "",
+    }
+  });
+  
 	const askForLocationPermissionStatus = async () => {
 		const { status } = await Permissions.askAsync(Permissions.LOCATION);
 		
@@ -100,35 +126,77 @@ const MakeOrderComponent = function (props) {
     },
     //secondStep,
     () => {
-      const isSecondStepValid = (props.order.type === "wash" && props.order.wash.weight !== "") 
-      || (props.order.type === "clean" && props.order.clean.count > 1)
-      || (props.order.type === "iron" && props.order.iron.items.length > 0);
+      const isIron = props.order.type === "iron" && props.order.iron.items.length > 0;
+      const isWash = props.order.type === "wash" && props.order.wash.weight !== "";
+      const isClean = props.order.type === "clean" && props.order.clean.count > 1;
+      const isSecondStepValid = isWash || isClean || isIron;
       
       if (isSecondStepValid) {
         setNextStepsState([false, false, true, true]);
+        const value = isIron
+          ? `iron, items: ${props.order.iron.items.join(", ")}`
+          : 
+            isWash
+              ? `wash, weight: ${props.order.wash.weight}`
+              :
+                isClean
+                  ? `clean, number of items: ${props.order.clean.count}`
+                  : 'some kind of issue has occured mate' ;
+        
+        updateOrderAsList({
+          ...orderAsList,
+          0: {
+            ...orderAsList[0],
+            value,
+          }
+        })
       }
     },
     //thirdStep,
     () => {
       const isThirdStepValid = props.order.details.pickup_date !== new Date()
-      && props.order.details.pickup_time !== new Date()
-      && datetimePicked[0]
-      && datetimePicked[1]
+        && props.order.details.pickup_time !== new Date()
+        && datetimePicked[0]
+        && datetimePicked[1];
 
       if (isThirdStepValid) {
         setNextStepsState([false, false, false, true]);
+        updateOrderAsList({
+          ...orderAsList,
+          1: {
+            ...orderAsList[1],
+            value: `${formatDate(props.order.details.pickup_date)}, ${formatTime(props.order.details.pickup_time)}`,
+          }
+        });
       }
     },
     //fourthStep,
     () => {
-      const isFourthStepValid = props.order.details.pickup_address !== ""
-      || (
-        props.order.details.pickup_geolocation.latitude !== 0
-        && props.order.details.pickup_geolocation.longitude !== 0
-      )
+      const isFourthStepValid = props.order.details.phone_number && (
+        props.order.details.pickup_address !== ""
+        || (
+          props.order.details.pickup_geolocation.latitude !== 0
+          && props.order.details.pickup_geolocation.longitude !== 0
+        )
+      );
 
       if (isFourthStepValid) {
         setNextStepsState([false, false, false, false]);
+        updateOrderAsList({
+          ...orderAsList,
+          2: {
+            ...orderAsList[2],
+            value: props.order.details.pickup_address
+          },
+          3: {
+            ...orderAsList[3],
+            value: props.order.details.phone_number,
+          },
+          4: {
+            ...orderAsList[4],
+            value: props.order.details.additional_notes,
+          }
+        })
       }
     },
   ]
@@ -137,7 +205,9 @@ const MakeOrderComponent = function (props) {
   const onPrevious = () => { setCurrentStep(currentStep - 1) }
 
   useEffect(() => {
-    validators[currentStep]()
+    if (currentStep < 4) {
+      validators[currentStep]();
+    }
   }, [
     props.order
   ]);
@@ -204,8 +274,8 @@ const MakeOrderComponent = function (props) {
                       title='5kg'
                       checkedIcon='dot-circle-o'
                       uncheckedIcon='circle-o'
-                      checked={props.order.wash.weight === '5kg'}
-                      onPress={() => props.chooseWashWeight('5kg')}
+                      checked={props.order.wash.weight === 5}
+                      onPress={() => props.chooseWashWeight(5)}
                     />
                 </View>
                 <View>
@@ -214,8 +284,8 @@ const MakeOrderComponent = function (props) {
                     title='10kg'
                     checkedIcon='dot-circle-o'
                     uncheckedIcon='circle-o'
-                    checked={props.order.wash.weight === '10kg'}
-                    onPress={() => props.chooseWashWeight('10kg')}
+                    checked={props.order.wash.weight === 10}
+                    onPress={() => props.chooseWashWeight(10)}
                   />
                 </View>
               </View>
@@ -342,66 +412,140 @@ const MakeOrderComponent = function (props) {
           onNext={onNext}
           onPrevious={onPrevious}
         >
-          <View>
-            <Input
-              placeholder="Address"
-              value={props.order.details.pickup_address}
-              onChange={props.enterPickupAddress}
-            />
-          </View>
-          <View>
-            <Button onPress={() => getLocation()} title="Get Current Location" />
-            <Text>Location Permission Status({locationPermissionStatus.status}): {locationPermissionStatus.message}</Text>
-            <Text>Current Position: Latitude ({ currentLocation.latitude }), Longitude ({ currentLocation.longitude })</Text>
-            <Text>Chosen Position: Latitude ({ props.order.details.pickup_geolocation.latitude  }), Longitude ({ props.order.details.pickup_geolocation.longitude })</Text>
-          </View>
-          <View>
-            <MapView
-              style={styles.map}
-              provider={PROVIDER_GOOGLE}
-              region={{
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude,
-                longitudeDelta: 0,
-                latitudeDelta: 0,
-              }}
-              initialRegion={{
-                latitude: 31.794525,
-                longitude: -7.0849336,
-                longitudeDelta: 0,
-                latitudeDelta: 0,
-              }}
-              showsUserLocation={true}
-            >
-							<MapView.Marker
-                coordinate={{
+          <ScrollView>
+            <View>
+              <Input
+                placeholder="Phone Number"
+                value={props.order.details.phone_number}
+                onChangeText={(text) => props.enterPhoneNumber(text)}
+              />
+            </View>
+            <View>
+              <Input
+                multiline
+                numberOfLines={4}
+                placeholder="Additional Notes"
+                value={props.order.details.additional_notes}
+                onChangeText={(text) => props.enterAdditionalNotes(text)}
+              />
+            </View>
+            <View>
+              <Input
+                placeholder="Address"
+                value={props.order.details.pickup_address}
+                onChangeText={(text) => props.enterPickupAddress(text)}
+              />
+            </View>
+            <View>
+              <Button onPress={() => getLocation()} title="Get Current Location" />
+              <Text>Location Permission Status({ locationPermissionStatus.status }): { locationPermissionStatus.message }</Text>
+              <Text>Current Position: Latitude ({ currentLocation.latitude }), Longitude ({ currentLocation.longitude })</Text>
+              <Text>Chosen Position: Latitude ({ props.order.details.pickup_geolocation.latitude  }), Longitude ({ props.order.details.pickup_geolocation.longitude })</Text>
+            </View>
+            <View>
+              <MapView
+                style={styles.map}
+                provider={PROVIDER_GOOGLE}
+                region={{
                   latitude: currentLocation.latitude,
                   longitude: currentLocation.longitude,
+                  longitudeDelta: 0,
+                  latitudeDelta: 0,
                 }}
-                draggable
-                onDragEnd={({ nativeEvent: { coordinate }}) => props.choosePickupGeolocation(coordinate)}
-              />
-						</MapView>
-          </View>
+                initialRegion={{
+                  latitude: 31.794525,
+                  longitude: -7.0849336,
+                  longitudeDelta: 0,
+                  latitudeDelta: 0,
+                }}
+                showsUserLocation={true}
+              >
+                <MapView.Marker
+                  coordinate={{
+                    latitude: currentLocation.latitude,
+                    longitude: currentLocation.longitude,
+                  }}
+                  draggable
+                  onDragEnd={({ nativeEvent: { coordinate }}) => props.choosePickupGeolocation(coordinate)}
+                />
+              </MapView>
+            </View>
+          </ScrollView>
         </ProgressStep>
-      
-        <ProgressStep
-          label="Final Step"
-        >
-          <View style={{ alignItems: 'center' }}>
-            <Text>This is the content within step 5!</Text>
-            <Text>We will insert additional notes</Text>
+        
+        <ProgressStep onSubmit={() => props.submitNewOrder(props.order)}>
+          <View>
+            {
+              props.order.details.submitting
+              && !props.order.details.done
+              &&
+              <View>
+                <Center>
+                  <View>
+                    <ActivityIndicator size="large"/>
+                  </View>
+                </Center>
+              </View>
+            }
+            {
+              !props.order.details.submitting
+              && props.order.details.done
+              && !props.order.details.success
+              &&
+              <View>
+                <Center>
+                  <View>
+                    <Text>
+                      There was a problem submitting your order, please contact us immediately.
+                    </Text>
+                  </View>
+                </Center> 
+              </View>
+            }
+            {
+              !props.order.details.submitting
+              && props.order.details.done
+              && props.order.details.success
+              &&
+              <View>
+                <Center>
+                  <View>
+                    <Text>
+                      Successfully submitted
+                    </Text>
+                  </View>
+                </Center> 
+              </View>
+            }
+            <View>
+              <Card>
+                <Card.Title>Review order</Card.Title>
+                <Card.Divider/>
+                {
+                  Object.keys(orderAsList).map(
+                    (key, i) => (
+                      <ListItem key={i} bottomDivider>
+                        <ListItem.Content>
+                          <ListItem.Title>{orderAsList[key].title}</ListItem.Title>
+                          <ListItem.Subtitle>{orderAsList[key].value}</ListItem.Subtitle>
+                        </ListItem.Content>
+                      </ListItem>
+                    )
+                  )
+                }
+              </Card>
+            </View>
           </View>
         </ProgressStep>
       </ProgressSteps>
       </View>
   )
-}
+};
 
 const mapStateToProps = (state) => {
 	const { newOrder, items } = state.global
 	return { order: newOrder, items }
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
 	return bindActionCreators({
@@ -413,7 +557,10 @@ const mapDispatchToProps = (dispatch) => {
     chooseWashWeight,
     chooseCleanCount,
     pickIronItem,
-	}, dispatch)
-}
+    enterPhoneNumber,
+    enterAdditionalNotes,
+    submitNewOrder,
+	}, dispatch);
+};
 
-export const MakeOrder = connect(mapStateToProps, mapDispatchToProps)(MakeOrderComponent)
+export const MakeOrder = connect(mapStateToProps, mapDispatchToProps)(MakeOrderComponent);
