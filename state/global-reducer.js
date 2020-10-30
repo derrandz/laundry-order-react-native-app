@@ -14,10 +14,14 @@ const INITIAL_STATE = {
         longitudeDelta: 0,
       },
       delivery_datetime: "",
-      additional_notes: ""
+      phone_number: "",
+      additional_notes: "",
+      submitting: false,
+      done: false,
+      success: false,
     },
     wash: {
-      weight: "",
+      weight: 0,
     },
     clean: {
       count: 1,
@@ -131,6 +135,32 @@ const globalStateReducer = (state = INITIAL_STATE, action) => {
       }
       break;
     
+    case "ENTER_PHONE_NUMBER":
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          details: {
+            ...state.newOrder.details,
+            phone_number: action.payload,
+          }
+        }
+      };
+      break;
+
+    case "ENTER_ADDITIONAL_NOTES":
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          details: {
+            ...state.newOrder.details,
+            additional_notes: action.payload,
+          }
+        }
+      };
+      break;
+
     case "SAVE_CURRENT_USER":
       return {
         ...state,
@@ -159,6 +189,51 @@ const globalStateReducer = (state = INITIAL_STATE, action) => {
           lastName: "",
           email: "",
           facebookUserId: "",
+        }
+      }
+      break;
+
+    case "SUBMIT_NEW_ORDER_INIT":
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          details: {
+            ...state.newOrder.details,
+            submitting: true,
+            done: false,
+            success: false,
+          }
+        }
+      }
+      break;
+
+    case "SUBMIT_NEW_ORDER_SUCCESS":
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          details: {
+            ...state.newOrder.details,
+            submitting: false,
+            done: true,
+            success: true,
+          }
+        }
+      }
+      break;
+
+    case "SUBMIT_NEW_ORDER_FAILURE":
+      return {
+        ...state,
+        newOrder: {
+          ...state.newOrder,
+          details: {
+            ...state.newOrder.details,
+            submitting: false,
+            done: true,
+            success: false,
+          }
         }
       }
       break;

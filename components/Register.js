@@ -38,6 +38,7 @@ const logInWithFb = async (signIn) => {
     const { type, token } = await Facebook.logInWithReadPermissionsAsync({ permissions: ['email'] });
 
     if (type === 'success') {
+      console.log(token);
       await storeAuthToken(token);
       signIn(token);
     }

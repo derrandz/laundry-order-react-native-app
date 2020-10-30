@@ -1,4 +1,4 @@
-const apiRootUrl = 'http://b4f3613a9bcd.ngrok.io';
+const apiRootUrl = 'http://16242683e558.ngrok.io';
 
 const CommonHeaders = {
   'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ const performRequest = (routeName) => (token, data) => {
   return fetch(`${apiRootUrl}${url}`, {
     method,
     headers: finalHeaders,
-    body: data,
+    body: JSON.stringify(data),
   }).then(
     (response) => response.json()
   ).then((jsonResponse) => {
@@ -58,7 +58,7 @@ const performRequest = (routeName) => (token, data) => {
 }
 
 const SignIn = performRequest('SignIn');
-const Authenticate = performRequest('SignIn');
+const Authenticate = performRequest('Authenticate');
 const CreateOrder = performRequest('CreateOrder');
 const GetMyOrders = performRequest('GetMyOrders');
 const GetAllOrders = performRequest('GetAllOrders');
