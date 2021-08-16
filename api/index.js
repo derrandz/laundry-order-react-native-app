@@ -1,4 +1,9 @@
-const apiRootUrl = 'http://16242683e558.ngrok.io';
+import Constants from 'expo-constants';
+
+console.log({
+  Manifest: Constants.manifest,
+})
+const apiRootUrl = Constants.manifest.extra.apiUrl;
 
 const CommonHeaders = {
   'Content-Type': 'application/json',
@@ -40,14 +45,29 @@ const performRequest = (routeName) => (token, data) => {
     ...{ 'Cookie': `token="${token}" ; HttpOnly` },
   };
 
-  return fetch(`${apiRootUrl}${url}`, {
+  const requestOptions = method === "POST"
+    ? {
+      method,
+      headers: finalHeaders,
+      body: JSON.stringify(data || {}),
+  } : {
     method,
     headers: finalHeaders,
-    body: JSON.stringify(data),
-  }).then(
-    (response) => response.json()
+  }
+
+  return fetch(`${apiRootUrl}${url}`, requestOptions).then(
+    (response) => {
+      console.log({ response });
+      try {
+        return response.json();
+      } catch (err) {
+        console.log('this is in here');
+        throw err;
+      }
+    }
   ).then((jsonResponse) => {
     if (jsonResponse.status === 'failure') {
+      console.error('fetch failed:', jsonResponse);
       throw jsonResponse.data;
     } else if (jsonResponse.status === 'success') {
       return jsonResponse.data;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Slider from '@react-native-community/slider';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
@@ -12,7 +12,7 @@ import { CheckBox, Input, Card, ListItem } from "react-native-elements";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Center } from "./Center"
-
+import { ScrollView } from 'react-native-gesture-handler';
 import {
   chooseType,
   choosePickupDate,
@@ -26,7 +26,6 @@ import {
   enterAdditionalNotes,
   submitNewOrder,
 } from "../state/order-actions";
-import { ScrollView } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   map: {
@@ -211,8 +210,31 @@ const MakeOrderComponent = function (props) {
   }, [
     props.order
   ]);
+  
+  useEffect(
+    () => {
+      let timerId = null;
+      const success = !props.order.details.submitting
+      && props.order.details.done
+      && props.order.details.success
+      
+      console.log('this effect on?', success)
 
-  return (
+      if (success && timerId === null) {
+        console.log("now succeeded");
+        timerId = setTimeout(() => {
+          props.navigation.navigate('Orders');
+        }, 2000);
+      }
+
+      return () => {
+        clearTimeout(timerId);
+      }
+    }, [
+    props.order.details,
+  ]);
+
+  return (  
     <View style={{ flex: 1 }}>
       <ProgressSteps>
         <ProgressStep

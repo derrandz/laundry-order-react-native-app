@@ -5,3 +5,5 @@ export { LoadingLogo } from "./LoadingLogo";
 export { shouldShowTutorial, enableTutorial, disableTutorial, Tutorial } from "./Tutorial"
 export { Center } from './Center'
 export { Register } from "./Register"
+export { OrderStatus } from "./OrderStatus"
+export { Orders } from "./Orders"

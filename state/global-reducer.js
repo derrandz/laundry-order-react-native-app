@@ -30,7 +30,14 @@ const INITIAL_STATE = {
       items: [],
     }
   },
-  orders: [],
+  orders: {
+    list: [],
+    state: {
+      fetching: false,
+      done: false,
+      success: false,
+    }
+  },
   items: ['shirt', 'jacket', 'trousers'],
 	currentUser: {
     firstName: "",
@@ -238,6 +245,50 @@ const globalStateReducer = (state = INITIAL_STATE, action) => {
       }
       break;
 
+
+    
+    case 'FETCH_MY_ORDERS_INIT':
+      return {
+        ...state,
+        orders: {
+          list: [],
+          state: {
+            fetching: true,
+            done: false,
+            success: false,
+          }
+        }
+      };
+      break;
+
+    case 'FETCH_MY_ORDERS_SUCCEEDED':
+      return {
+        ...state,
+        orders: {
+          list: action.payload,
+          state: {
+            fetching: false,
+            done: true,
+            success: true,
+          }
+        }
+      };
+      break;
+
+    case 'FETCH_MY_ORDERS_FAILUED':
+      return {
+        ...state,
+        orders: {
+          list: [],
+          state: {
+            fetching: false,
+            done: true,
+            success: false,
+          }
+        }
+      };
+      break;
+
     default:
       return state
 	}
@@ -246,4 +297,3 @@ const globalStateReducer = (state = INITIAL_STATE, action) => {
 export const globalReducer =  combineReducers({
 	global: globalStateReducer,
 });
-

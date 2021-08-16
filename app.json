@@ -11,6 +11,10 @@
     ],
     "android": {
       "package": "com.laundyhouseeljadida.laundryhouse"
+    },
+    "extra": {
+      "apiUrl": "http://958c26552ef7.ngrok.io",
+      "appId": "3432796773467634"
     }
   },
   "version": "1.0.0",
@@ -23,7 +27,6 @@
     "package": "laundryhouseeljadida",
     "versionCode": 1
   },
-  "appId": "3432796773467634",
   "facebookScheme": "fb3432796773467634",
   "facebookAppId": "3432796773467634",
   "facebookDisplayName": ""
