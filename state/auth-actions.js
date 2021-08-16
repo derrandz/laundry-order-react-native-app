@@ -17,9 +17,17 @@ const flushOutCurrentUser = () => ({
 const signIn = (token) => {
   return async (dispatch, getState, Api) => {
     try {
-      const response = await Api.SignIn(token);
-      console.log({ response });
-      return dispatch(saveCurrentUser(response.user));
+      // const response = await Api.SignIn(token);
+      // console.log({ response });
+      const user = {
+        firstName: "Omar",
+        lastName: "Fakir",
+        authToken: "pasdetoken",
+        email: "sjad@gk.com",
+        facebookUserId: "sdfsdf",
+        success: 0,
+      }
+      return dispatch(saveCurrentUser(user));
     } catch (err) {
       console.log("failure", { err });
       return dispatch(failedToFetchCurrentUser());

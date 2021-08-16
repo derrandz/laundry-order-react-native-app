@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
 const storeAuthToken = async (token, expirationDate) => SecureStore.setItemAsync("token", token);
 
 const logInWithFb = async (signIn) => {
+  signIn("notokensir")
   try {
     await Facebook.initializeAsync({
       appId,
