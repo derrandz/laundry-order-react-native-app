@@ -18,6 +18,7 @@ const signIn = (token) => {
   return async (dispatch, getState, Api) => {
     try {
       const response = await Api.SignIn(token);
+      console.log({ response });
       return dispatch(saveCurrentUser(response.user));
     } catch (err) {
       console.log("failure", { err });

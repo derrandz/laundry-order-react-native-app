@@ -17,21 +17,30 @@
       ✔ store address @done (10/20/2020, 6:37:41 PM)
   ✔ disallow continuation to next step if first step not filled @done (10/20/2020, 9:43:03 PM)
   ✔ remove navigation bar @done (10/20/2020, 9:57:01 PM)
-  ☐ add phone number to orders
+  ✔ add phone number to orders @done (10/30/2020, 10:31:23 PM)
+  ☐ intercept proper api error codes and throw from fetch in api/index
   ☐ add review order before submit
     ☐ What do we do about the picked geolocation?
-    ☐ add phone_number field and ability to choose existing account phone number
-  ☐ add submit logic
+    ✔ redirect to proper screen afterwards (goto orders summary) @done (11/15/2020, 11:25:51 PM)
+    ✔ add component @done (10/30/2020, 10:32:12 PM)
+    ✔ add submit logic @done (10/30/2020, 10:32:13 PM)
+    ✔ show failure and success messages @done (10/30/2020, 10:32:14 PM)
+  ✔ add submit logic @done (10/30/2020, 10:31:31 PM)
   ☐ add cancel logic
   ☐ add orders summary
+    ✔ create components @done (11/15/2020, 11:25:57 PM)
+    ☐ fetch all orders from there
+      ☐ display orders ( we are here )
+      ☐ categorize by status
+    ☐ add a link to add a new order
   ✔ write backend sdk @done (10/24/2020, 6:57:14 PM)
   ☐ implement sign-in/up
     ✔ add signing with facebook @done (10/24/2020, 5:42:33 PM)
     ☐ implement authentication scenario
       ☐ check if token is not expired and the current user is logged(to be able to skip the login step) 
+      ☐ install a timer to watch for the expiration of the token
       ☐ when signin fails from backend the message and the way it is displayed needs to improved
       ✔ if successful we store the current user @done (10/25/2020, 9:45:23 PM)
-      ☐ install a timer to watch for the expiration of the token
     ✔ implement auth token persistence @done (10/25/2020, 9:44:29 PM)
     ✔ hook to the backend @done (10/25/2020, 9:44:31 PM)
     ✔ implement a secure httponly cookie for the authentication token @done (10/25/2020, 9:44:33 PM)
@@ -44,3 +53,10 @@
   ☐ configure maps to work on iOS
   ☐ look into using deep links to allow for opening the user settings for the app's location when it's denied
   ☐ revise the datetimepicker: whether it requires configuration for iOS and Android
+
+@missing-features:
+  ☐ add the items of the order to the summary
+  ☐ add a review of the price
+  ☐ we can extend the type of the location
+  ☐ we can impreuve the date and time pickery
+  ☐ we can later add a few option for your payment

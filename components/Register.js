@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Constants from 'expo-constants';
 
 import { View, Button, StyleSheet, Text } from "react-native";
 import { connect } from "react-redux";
@@ -8,7 +9,7 @@ import { signIn } from "../state/auth-actions";
 import * as Facebook from "expo-facebook";
 import * as SecureStore from 'expo-secure-store';
 
-const appId = "3432796773467634";
+const appId = Constants.manifest.extra.appId;
 
 const styles = StyleSheet.create({
   container: {

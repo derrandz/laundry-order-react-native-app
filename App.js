@@ -5,7 +5,7 @@ import Thunk from 'redux-thunk';
 
 import * as Api from './api';
 
-import { Tutorial, NoInternet, SomethingWrong, LoadingLogo, MakeOrder, Register } from "./components";
+import { Tutorial, NoInternet, SomethingWrong, LoadingLogo, MakeOrder, Register, Orders } from "./components";
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider } from "react-redux";
@@ -30,6 +30,7 @@ export default function App() {
 					<Stack.Screen options={{ headerShown: false }}name="NoInternet" component={NoInternet} />
 					<Stack.Screen options={{ headerShown: false }}name="SomethingWrong" component={SomethingWrong} />
 					<Stack.Screen options={{ headerShown: false }}name="Register" component={Register} />
+					<Stack.Screen options={{ headerShown: false }}name="Orders" component={Orders} />
 				</Stack.Navigator>
 			</NavigationContainer>
 		</Provider>

@@ -57,8 +57,6 @@ export const submitNewOrderWithFailure = () => ({ type: "SUBMIT_NEW_ORDER_FAILUR
 export const submitNewOrder = () => async (dispatch, getState, Api) => {
   dispatch(startSubmittingNewOrder());
   
-  console.log("submit new order");
-
   try {
     const state = getState();
     const order = Order(state.global.newOrder);
@@ -76,4 +74,35 @@ export const submitNewOrder = () => async (dispatch, getState, Api) => {
   console.log("successfully submited new order");
   dispatch(submitNewOrderWithSuccess());
   return;
+}
+
+export const fetchMyOrders = () => ({
+  type: 'FETCH_MY_ORDERS_INIT',
+})
+
+export const fetchMyOrdersSuccess = (orders) => ({
+  type: 'FETCH_MY_ORDERS_SUCCEEDED',
+  payload: orders,
+})
+
+export const fetchMyOrdersFailure = () => ({
+  type: 'FETCH_MY_ORDERS_FAILUED',
+})
+
+
+export const getMyOrders = () => async (dispatch, getState, Api) => {
+  dispatch(fetchMyOrders())
+
+  let orders;
+  try {
+    const token = await SecureStore.getItemAsync("token");
+    orders = await Api.GetMyOrders(token);
+  } catch (err) {
+    console.log('failed to fetch my orders', err)
+    dispatch(fetchMyOrdersFailure())
+    return;
+  }
+
+  console.log('fetched orders, successfully.', orders);
+  dispatch(fetchMyOrdersSuccess(orders));
 }
